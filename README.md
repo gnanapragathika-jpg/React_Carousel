@@ -1,5 +1,6 @@
 # Ex05 Image Carousel
-## Date:08/09/2026
+## Date: 08/09/2026
+
 
 ## AIM
 To create a Image Carousel using React 
@@ -39,115 +40,197 @@ Use setInterval to call the nextImage() function at regular intervals.
 Clean up the interval when the component unmounts using clearInterval to prevent memory leaks.
 
 ## PROGRAM
-### APP.jsx
-```
+### Imagecarousel.jsx
+```javascript
 import { useState, useEffect } from "react";
-import "./App.css";
+import "./ImageCarousel.css";
 
-function App() {
+function ImageCarousel() {
+
   const images = [
-    "https://image.api.playstation.com/vulcan/ap/rnd/202312/2115/3ac50f394d24bd8d5af5650eef32fcc1654166d30e3a3216.jpg",
-    "https://m.media-amazon.com/images/S/pv-target-images/a0cb3885c44b8305ac89ba7ce98e8cd978bf3ebba6a151a00dbf2d528e98bf3b.jpg",
-    "https://images5.alphacoders.com/746/746050.jpg",
-    "https://cmsapi-frontend.naruto-official.com/site/api/naruto/Image/get?path=/naruto/jp/news/2023/07/19/PxlL2EIbfVfxfsXI/%E5%90%8D%E7%A7%B0%E6%9C%AA%E8%A8%AD%E5%AE%9A%201.jpg?_=103416c600291dfec2db98bb8f73254f"
+    "https://picsum.photos/id/1015/900/500",
+    "https://picsum.photos/id/1016/900/500",
+    "https://picsum.photos/id/1018/900/500",
+    "https://picsum.photos/id/1025/900/500"
   ];
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
+  // Next image
   function nextImage() {
     setCurrentIndex((currentIndex + 1) % images.length);
   }
 
+  // Previous image
   function previousImage() {
     setCurrentIndex(
       (currentIndex - 1 + images.length) % images.length
     );
   }
 
+  // Automatic rotation
   useEffect(() => {
-    const timer = setInterval(nextImage, 3000);
 
-    return () => clearInterval(timer);
+    const interval = setInterval(() => {
+      nextImage();
+    }, 3000);
+
+    return () => clearInterval(interval);
+
   }, [currentIndex]);
 
   return (
-    <div className="carousel">
+    <div className="carousel-container">
+
       <h1>Image Carousel</h1>
 
-      <img
-        src={images[currentIndex]}
-        alt="carousel"
-      />
+      <div className="carousel">
 
-      <br />
+        {/* Previous Arrow */}
+        <button
+          className="arrow left"
+          onClick={previousImage}
+        >
+          &#10094;
+        </button>
 
-      <button onClick={previousImage}>Previous</button>
-      <button onClick={nextImage}>Next</button>
+        {/* Image */}
+        <img
+          src={images[currentIndex]}
+          alt="Carousel"
+        />
 
-      <p>Image {currentIndex + 1}</p>
+        {/* Next Arrow */}
+        <button
+          className="arrow right"
+          onClick={nextImage}
+        >
+          &#10095;
+        </button>
+
+      </div>
+
+      {/* Dots */}
+      <div className="dots">
+
+        {images.map((_, index) => (
+          <span
+            key={index}
+            className={index === currentIndex ? "dot active" : "dot"}
+            onClick={() => setCurrentIndex(index)}
+          ></span>
+        ))}
+
+      </div>
+
+      <p>
+        {currentIndex + 1} / {images.length}
+      </p>
+
     </div>
   );
 }
 
-export default App;
+export default ImageCarousel;
 ```
-### APP.css
-```
-.carousel {
-  width: 700px;
-  margin: 50px auto;
+### Imagecarousel.css
+```css
+.carousel-container {
   text-align: center;
-  padding: 20px;
-  background: white;
-  border-radius: 10px;
+  margin-top: 40px;
 }
 
-.carousel h1 {
-  margin-bottom: 20px;
+.carousel-container h1 {
+  font-size: 32px;
+  margin-bottom: 25px;
+}
+
+.carousel {
+  width: 900px;
+  height: 500px;
+  margin: auto;
+  position: relative;
 }
 
 .carousel img {
-  width: 600px;
-  height: 400px;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
-  border-radius: 8px;
+  border-radius: 12px;
 }
 
-button {
-  margin: 20px 10px;
-  padding: 10px 20px;
+/* Arrow buttons */
+
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  width: 50px;
+  height: 50px;
+
   border: none;
-  border-radius: 5px;
-  background: #333;
+  border-radius: 50%;
+
+  background: rgba(0, 0, 0, 0.6);
   color: white;
+
+  font-size: 30px;
+  cursor: pointer;
+
+  z-index: 2;
+}
+
+.arrow:hover {
+  background: rgba(0, 0, 0, 0.9);
+}
+
+.left {
+  left: 15px;
+}
+
+.right {
+  right: 15px;
+}
+
+/* Dots */
+
+.dots {
+  margin-top: 20px;
+}
+
+.dot {
+  display: inline-block;
+
+  width: 10px;
+  height: 10px;
+
+  margin: 0 6px;
+
+  background: #bbb;
+  border-radius: 50%;
+
   cursor: pointer;
 }
 
-button:hover {
-  background: #555;
-}
-```
-### INDEX.jsx
-```
-* {
-  box-sizing: border-box;
+.dot.active {
+  background: #333;
+  transform: scale(1.3);
 }
 
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #222;
-}
-
-#root {
-  width: 100%;
-  min-height: 100vh;
+.carousel-container p {
+  font-size: 16px;
 }
 ```
+
 ## OUTPUT
-![alt text](image.png)
-![alt text](image-1.png)
-![alt text](image-2.png)
-![alt text](image-3.png)
+<img width="1920" height="967" alt="image" src="https://github.com/user-attachments/assets/b8df3693-8d39-4b40-a84e-142125c1a131" />
+<img width="1917" height="946" alt="image" src="https://github.com/user-attachments/assets/a31418f9-f5a9-4869-816e-8d7086984e56" />
+<img width="1920" height="965" alt="image" src="https://github.com/user-attachments/assets/af388698-0020-4d26-8d0b-dddc86abde21" />
+<img width="1920" height="957" alt="image" src="https://github.com/user-attachments/assets/99da7213-fa98-4fec-9909-5022a513b8a7" />
+
+
+
+
 ## RESULT
 The program for creating Image Carousel using React is executed successfully.
